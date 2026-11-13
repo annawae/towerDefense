@@ -42,18 +42,9 @@ function gridDraw(ctx) {
   var w = COLS * CELL, h = ROWS * CELL;
 
   // 1. Hintergrundbild (unterste Ebene). Fallback-Farbe falls noch nicht geladen.
-  //    Das Bild ist im Querformat (z.B. 800x600). Fürs hochkante Spielfeld
-  //    wird es um 90° gedreht gezeichnet, damit es ohne Verzerrung passt.
+  //    Das Bild ist im Hochformat und füllt das hochkante Spielfeld direkt.
   if (bgImageLoaded) {
-    ctx.save();
-    // Kontext in die Mitte verschieben, um 90° im Uhrzeigersinn drehen,
-    // dann das Bild zentriert zeichnen. Nach der Drehung entsprechen
-    // Bild-Breite -> Feldhöhe und Bild-Höhe -> Feldbreite.
-    ctx.translate(w / 2, h / 2);
-    ctx.rotate(Math.PI / 2); // 90° im Uhrzeigersinn
-    // Im gedrehten Koordinatensystem ist die Zeichenbreite = h, die Höhe = w.
-    ctx.drawImage(bgImage, -h / 2, -w / 2, h, w);
-    ctx.restore();
+    ctx.drawImage(bgImage, 0, 0, w, h);
   } else {
     ctx.fillStyle = '#1e1e32';
     ctx.fillRect(0, 0, w, h);
