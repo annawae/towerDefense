@@ -31,6 +31,43 @@ function uiInit(onTowerSelect, onStartWave, onRestart) {
 
   btnWave.addEventListener('click', onStartWave);
   document.getElementById('restart-btn').addEventListener('click', onRestart);
+
+  uiDrawTowerIcons();
+}
+
+// Zeichnet den ersten (statischen) Frame jedes Turm-Spritesheets in das
+// Icon-Canvas des jeweiligen Kauf-Buttons.
+function uiDrawTowerIcons() {
+  ['normal','splash','slow'].forEach(function (type) {
+    var canvas = towerBtns[type].querySelector('.tower-icon');
+    if (!canvas) return;
+    var sprite = TOWER_SPRITES[type];
+
+    function render() {
+      // Interne Auflösung an das CSS-Maß koppeln (scharf auf allen Displays)
+      var cssW = canvas.clientWidth  || 26;
+      var cssH = canvas.clientHeight || 48;
+      var dpr  = window.devicePixelRatio || 1;
+      canvas.width  = cssW * dpr;
+      canvas.height = cssH * dpr;
+
+      var ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Nur den ersten Frame (statisch) aus dem Spritesheet zeichnen
+      ctx.drawImage(
+        sprite.img,
+        0, 0, TOWER_FRAME_W, TOWER_FRAME_H,   // Quelle: Frame 0
+        0, 0, canvas.width, canvas.height     // Ziel: ganzes Canvas
+      );
+    }
+
+    if (sprite.loaded) {
+      render();
+    } else {
+      // Bild evtl. noch nicht fertig geladen → nachträglich zeichnen
+      sprite.img.addEventListener('load', render);
+    }
+  });
 }
 
 function uiUpdateBtnStyles() {

@@ -234,7 +234,7 @@ function update(dt) {
 
   var newEnemies = [];
   for (var i = 0; i < enemies.length; i++) {
-    if (!enemies[i].dead || enemies[i].deathFlash) newEnemies.push(enemies[i]);
+    if (!enemies[i].dead || enemies[i].deathFlash || enemies[i].goldPopupTimer > 0) newEnemies.push(enemies[i]);
   }
   enemies = newEnemies;
 

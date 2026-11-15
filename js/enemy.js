@@ -16,6 +16,8 @@ function Enemy(path, hp, speed, gold, color) {
   this.slowTimer    = 0;
   this.deathTimer   = 0;
   this.deathFlash   = false;
+  this.goldPopupTimer    = 0;    // läuft nach dem Tod, zeigt "+Gold" an
+  this.goldPopupDuration = 1.4;  // Sekunden, die das Popup sichtbar bleibt
   this._counted     = false;
   this._goldCounted = false;
   this.x = path[0].col * CELL + CELL/2;
@@ -49,6 +51,7 @@ Enemy.prototype.takeDamage = function (dmg) {
     // Dauer = Anzahl Death-Frames / FPS
     this.deathTimer = ORC_SPRITES.death.frames / this.deathFps;
     this.deathAnimTime = 0;
+    this.goldPopupTimer = this.goldPopupDuration;
   }
 };
 
@@ -73,6 +76,7 @@ Enemy.prototype.update = function (dt) {
       this.deathAnimTime += dt;
       if (this.deathTimer <= 0) this.deathFlash = false;
     }
+    if (this.goldPopupTimer > 0) this.goldPopupTimer -= dt;
     return;
   }
   // Laufanimation weiterzählen
@@ -121,7 +125,11 @@ Enemy.prototype._drawSprite = function (ctx, sheet, frameIndex) {
 };
 
 Enemy.prototype.draw = function (ctx) {
-  if (this.dead && !this.deathFlash) return;
+  if (this.dead && !this.deathFlash) {
+    // Sprite fertig, aber Gold-Popup läuft evtl. noch
+    if (this.goldPopupTimer > 0) this._drawGoldPopup(ctx);
+    return;
+  }
 
   var walk  = ORC_SPRITES.walk;
   var death = ORC_SPRITES.death;
@@ -141,6 +149,7 @@ Enemy.prototype.draw = function (ctx) {
       ctx.fillStyle = 'rgba(255,255,200,' + alpha + ')';
       ctx.fill();
     }
+    this._drawGoldPopup(ctx);
     return;
   }
 
@@ -183,4 +192,33 @@ Enemy.prototype.draw = function (ctx) {
   ctx.fillRect(barX, barY, barW, barH);
   ctx.fillStyle = pct > 0.6 ? '#3f3' : pct > 0.3 ? '#ff0' : '#f33';
   ctx.fillRect(barX, barY, barW*pct, barH);
+};
+
+// Zeigt "+Gold" an, das beim Tod nach oben schwebt und ausblendet.
+Enemy.prototype._drawGoldPopup = function (ctx) {
+  // Kein Gold, wenn der Gegner das Ziel erreicht hat
+  if (this.reachedEnd) return;
+
+  // Fortschritt des Popups: 0 = gerade gestorben, 1 = Popup vorbei
+  var total = this.goldPopupDuration;
+  var t = total > 0 ? (1 - this.goldPopupTimer / total) : 1;
+  if (t < 0) t = 0;
+  if (t > 1) t = 1;
+
+  var rise  = ENEMY_DRAW_SIZE * 0.6 * t;                        // schwebt nach oben
+  var alpha = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;                // erst voll sichtbar, dann ausblenden
+  var y = this.y - ENEMY_DRAW_SIZE / 2 + 4 - 8 - rise;
+
+  var label = '+' + this.gold;
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.font = 'bold 22px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+  ctx.strokeText(label, this.x, y);
+  ctx.fillStyle = '#ffd34d';
+  ctx.fillText(label, this.x, y);
+  ctx.restore();
 };

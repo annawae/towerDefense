@@ -27,14 +27,7 @@
       touch-action: manipulation;
     }
 
-    h1 {
-      font-size: 1.3rem;
-      margin-bottom: 6px;
-      color: #e0c060;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-align: center;
-    }
+
 
     #game-container {
       display: flex;
@@ -138,9 +131,11 @@
     .tower-btn.cant-afford { opacity: 0.4; cursor: not-allowed; }
 
     .tower-icon {
-      width: 24px; height: 24px;
-      border-radius: 3px;
+      width: 42px;
+      height: 78px;          /* Turm-Frame ist 70x130 → Hochformat beibehalten */
       flex-shrink: 0;
+      image-rendering: pixelated;
+      border: none;          /* kein Rahmen ums Icon (überschreibt canvas-Regel) */
     }
     .tower-btn .info { display: flex; flex-direction: column; }
     .tower-btn .tname { font-weight: bold; }
@@ -239,7 +234,7 @@
       }
       /* Beschreibungstext auf engem Raum ausblenden */
       .tower-btn .tdesc { display: none; }
-      .tower-icon { width: 30px; height: 30px; }
+      .tower-icon { width: 32px; height: 59px; }
 
       /* Verkauf-Hinweis über volle Breite */
       #sell-hint { width: 100%; }
@@ -258,7 +253,7 @@
   </style>
 </head>
 <body>
-  <h1>⚔ Tower Defense</h1>
+
 
   <div id="game-container">
     <div id="canvas-wrap">
@@ -289,7 +284,7 @@
       <div id="shop">
         <h3>Türme kaufen</h3>
         <button class="tower-btn" id="btn-tower-normal" data-type="normal">
-          <div class="tower-icon" style="background:#4a90d9;"></div>
+          <canvas class="tower-icon" data-type="normal"></canvas>
           <div class="info">
             <span class="tname">Normal</span>
             <span class="tcost">💰 50</span>
@@ -297,7 +292,7 @@
           </div>
         </button>
         <button class="tower-btn" id="btn-tower-splash" data-type="splash">
-          <div class="tower-icon" style="background:#e05c20;"></div>
+          <canvas class="tower-icon" data-type="splash"></canvas>
           <div class="info">
             <span class="tname">Splash</span>
             <span class="tcost">💰 80</span>
@@ -305,7 +300,7 @@
           </div>
         </button>
         <button class="tower-btn" id="btn-tower-slow" data-type="slow">
-          <div class="tower-icon" style="background:#30b090;"></div>
+          <canvas class="tower-icon" data-type="slow"></canvas>
           <div class="info">
             <span class="tname">Slow</span>
             <span class="tcost">💰 60</span>
