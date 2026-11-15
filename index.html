@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Tower Defense</title>
 
   <!-- Telegram Mini App SDK: muss vor dem Spiel-Code geladen werden -->
@@ -21,6 +21,8 @@
       align-items: center;
       min-height: 100vh;
       padding: 8px;
+      /* Abstand zur Geräte-Statusleiste (Notch/Uhrzeit) am Handy */
+      padding-top: calc(8px + env(safe-area-inset-top, 0px));
       /* verhindert versehentliches Scrollen/Textmarkieren beim Tippen */
       -webkit-user-select: none;
       user-select: none;
