@@ -31,11 +31,11 @@
 
     #game-container {
       display: flex;
-      gap: 14px;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       width: 100%;
-      max-width: 820px;
-      justify-content: center;
+      max-width: 600px;
     }
 
     #canvas-wrap {
@@ -78,23 +78,26 @@
     #overlay p { font-size: 1.1rem; color: #ccc; }
 
     #sidebar {
-      width: 175px;
+      width: 100%;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
     #hud {
+      width: 100%;
       background: #16213e;
       border: 1px solid #334;
       border-radius: 6px;
-      padding: 10px 12px;
+      padding: 8px 12px;
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      gap: 16px;
       font-size: 0.95rem;
     }
-    #hud .row { display: flex; justify-content: space-between; align-items: center; }
+    #hud .row { display: flex; align-items: center; gap: 6px; }
     #hud .label { color: #aaa; }
     #hud .val-lives  { color: #ff8080; font-weight: bold; }
     #hud .val-gold   { color: #ffd700; font-weight: bold; }
@@ -106,25 +109,28 @@
       border-radius: 6px;
       padding: 10px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
       gap: 6px;
     }
-    #shop h3 { font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    #shop h3 { width: 100%; font-size: 0.85rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
 
     .tower-btn {
+      flex: 1 1 0;
+      min-width: 90px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       background: #0f3460;
       border: 2px solid transparent;
       border-radius: 5px;
-      padding: 7px 8px;
+      padding: 10px 6px;
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
       color: #eee;
       font-size: 0.85rem;
-      text-align: left;
-      width: 100%;
+      text-align: center;
     }
     .tower-btn:hover { background: #1a4a80; }
     .tower-btn.selected { border-color: #ffd700 !important; background: #1a4a80; }
@@ -137,12 +143,13 @@
       image-rendering: pixelated;
       border: none;          /* kein Rahmen ums Icon (überschreibt canvas-Regel) */
     }
-    .tower-btn .info { display: flex; flex-direction: column; }
+    .tower-btn .info { display: flex; flex-direction: column; align-items: center; }
     .tower-btn .tname { font-weight: bold; }
     .tower-btn .tcost { color: #ffd700; font-size: 0.78rem; }
     .tower-btn .tdesc { color: #999; font-size: 0.72rem; line-height: 1.3; }
 
     #sell-hint {
+      width: 100%;
       font-size: 0.72rem;
       color: #888;
       text-align: center;
@@ -256,6 +263,21 @@
 
 
   <div id="game-container">
+    <div id="hud">
+      <div class="row">
+        <span class="label">❤️ Leben</span>
+        <span class="val-lives" id="hud-lives">20</span>
+      </div>
+      <div class="row">
+        <span class="label">💰 Gold</span>
+        <span class="val-gold" id="hud-gold">150</span>
+      </div>
+      <div class="row">
+        <span class="label">🌊 Welle</span>
+        <span class="val-wave" id="hud-wave">0 / 10</span>
+      </div>
+    </div>
+
     <div id="canvas-wrap">
       <canvas id="gameCanvas"></canvas>
       <div id="overlay">
@@ -266,19 +288,9 @@
     </div>
 
     <div id="sidebar">
-      <div id="hud">
-        <div class="row">
-          <span class="label">❤️ Leben</span>
-          <span class="val-lives" id="hud-lives">20</span>
-        </div>
-        <div class="row">
-          <span class="label">💰 Gold</span>
-          <span class="val-gold" id="hud-gold">150</span>
-        </div>
-        <div class="row">
-          <span class="label">🌊 Welle</span>
-          <span class="val-wave" id="hud-wave">0 / 10</span>
-        </div>
+      <div id="wave-ctrl">
+        <button class="action-btn" id="btn-start-wave">▶ Welle starten</button>
+        <div id="wave-info">Platziere Türme, dann starte!</div>
       </div>
 
       <div id="shop">
@@ -308,11 +320,6 @@
           </div>
         </button>
         <div id="sell-hint">Verkaufen (voller Preis): Rechtsklick · am Handy langer Druck auf den Turm</div>
-      </div>
-
-      <div id="wave-ctrl">
-        <button class="action-btn" id="btn-start-wave">▶ Welle starten</button>
-        <div id="wave-info">Platziere Türme, dann starte!</div>
       </div>
 
       <div id="legend">
